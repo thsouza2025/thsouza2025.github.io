@@ -6,7 +6,7 @@
   <title>Rifa de Patrocínio</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif;  
       text-align: center;
       color: greenyellow;
       margin: 0;
@@ -90,25 +90,26 @@
       font-size: 35px;
       margin-top: 15px;
       font-weight: bold;
-      color: black;
+      color: white;
       text-shadow:
-        2px 2px 0px white,
-        -2px -2px 0px white,
-        2px -2px 0px white,
-        -2px 2px 0px white;
+        0px 0px 0px white,
+        0px 0px 0px white,
+        0px 0px 0px white,
+        0px 0px 0px white;
     }
 
     .subtitulo {
-      color: black;
+      color: white;
       text-shadow:
-        2px 2px 0px white,
-        -2px -2px 0px white,
-        2px -2px 0px white,
-        -2px 2px 0px white;
+         0px 0px 0px white,
+        0px 0px 0px white,
+        0px 0px 0px white,
+        0px 0px 0px white;
     }
 
     .pix, .valor, .confPag, .premio {
       color: white;
+      font-size: 30px;
     }
 
     .pix {
@@ -125,7 +126,7 @@
     }
 
     .confPag {
-      font-size: 18px;
+      font-size: 35px;
       font-weight: bold;
       margin-bottom: 45px;
     }
@@ -141,15 +142,45 @@
       text-decoration: none;
     }
 
-    .premio a {
+    .premio a.botao-premio {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #3b5998;
       color: black;
+      border: none;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: bold;
       text-decoration: none;
-      font-size: 30px;
-      text-shadow:
-        1px 1px 0px white,
-        -1px -1px 0px white,
-        1px -1px 0px white,
-        -1px 1px 0px white;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease;
+      margin-left: 10px;
+    }
+
+    .premio a.botao-premio:hover {
+      background-color: #218838;
+      cursor: pointer;
+    }
+
+    /* Novo botão para o link Instagram */
+    .botao-instagram {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #3b5998; /* Azul escuro */
+      color: black;
+      border: none;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease;
+      margin-left: 10px;
+    }
+
+    .botao-instagram:hover {
+      background-color: #2d4373;
+      cursor: pointer;
     }
 
     .descricao {
@@ -157,7 +188,7 @@
       padding: 15px;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 18px;
       color: #14130b;
     }
 
@@ -288,7 +319,7 @@
 
   <div class="container">
     <h1 class="titulo">Participe da Rifa Produção Cênica Basileu França!</h1>
-    <h2 class="subtitulo">Ao adquirir uma rifa, você estará contrinuindo para a realização do projeto curta cena.</h2>
+    <h2 class="subtitulo">Ao adquirir uma rifa, você estará contribuindo para a realização do projeto curta cena.</h2>
 
     <div class="grid-container">
       <div class="grid" id="grid"></div>
@@ -296,9 +327,28 @@
 
     <p class="valor">Valor R$ 10,00 </p>
     <p class="confPag">(Após confirmação do pagamento o número será validado.)</p>
-    <p class="pix">PIX (62)981640222 Sandra Oliveira Skowronski </p>
-    <p class="premio">O prêmio sera 2 vouchers jantar na churrascaria gramado <a href="imagem.logos.jpg"> clique aqui!</a></p>
-    <p class="confPag"> Conheça mais do curso produções cênicas Basileu França no Instagram <a href="https://www.instagram.com/produçãocênicabasileufrança" target="_blank">clicando aqui</a>.</p>
+    <p class="pix">PIX (62)981640222 Sandra Oliveira Skowronski</p>
+    <p class="premio">
+      O prêmio será 2 vouchers jantar na churrascaria Gramado
+      <a href="img/imagem.logos.jpg" class="botao-premio" target="_blank">clique aqui!</a>
+    </p>
+    <p class="confPag">
+      Conheça mais do curso produções cênicas Basileu França no Instagram
+      <a href="https://www.instagram.com/producaocenicabasileu" target="_blank" class="botao-instagram">clicando aqui</a>.
+    </p>
+
+    <!-- Container flex para imagens próximas ao rodapé -->
+    <div style="display: flex; justify-content: flex-start; align-items: center; gap: 8px; margin: 8px 0;">
+      <!-- Imagem alinhada à esquerda -->
+      <div style="flex: 0 0 auto;">
+        <img src="imagem-rodape.png" alt="Imagem à esquerda do rodapé" style="max-width: 300px; height: auto; border-radius: 10px;" />
+      </div>
+
+      <!-- Imagem centralizada (ou próxima) -->
+      <div style="flex: 1; text-align: center;">
+        <img src="imagem-rodape.jpg.png" alt="Imagem central próxima ao rodapé" style="max-width: 300px; height: auto; border-radius: 10px;" />
+      </div>
+    </div>
 
     <marquee behavior="scroll" direction="left" scrollamount="10" style="font-weight: bold; font-size: 20px; color: yellow;">
       A Gestão do curso de produção cênica agradece a todos e boa sorte!
@@ -322,15 +372,15 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
- const firebaseConfig = {
-  apiKey: "AIzaSyARl3GW4eFVuPJQVf5353V9JUxDsCWMSzY",
-  authDomain: "rifacenacurtabasileu.firebaseapp.com",
-  databaseURL: "https://rifacenacurtabasileu-default-rtdb.firebaseio.com",
-  projectId: "rifacenacurtabasileu",
-  storageBucket: "rifacenacurtabasileu.firebasestorage.app",
-  messagingSenderId: "3612320470",
-  appId: "1:3612320470:web:b9c354f87a9387a92b1f77"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyARl3GW4eFVuPJQVf5353V9JUxDsCWMSzY",
+      authDomain: "rifacenacurtabasileu.firebaseapp.com",
+      databaseURL: "https://rifacenacurtabasileu-default-rtdb.firebaseio.com",
+      projectId: "rifacenacurtabasileu",
+      storageBucket: "rifacenacurtabasileu.firebasestorage.app",
+      messagingSenderId: "3612320470",
+      appId: "1:3612320470:web:b9c354f87a9387a92b1f77"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -418,5 +468,7 @@
       });
     });
   </script>
+</body>
+</html>
 </body>
 </html>
