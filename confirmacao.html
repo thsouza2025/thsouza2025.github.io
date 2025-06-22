@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Pagamento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #login-form, #logout-btn {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        input, button {
+            margin: 5px;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background: #333;
+            color: white;
+        }
+        .btn-pagar {
+            padding: 5px 10px;
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-excluir {
+            padding: 5px 10px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 5px;
+        }
+        .pago {
+            color: green;
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: #d4edda;
+            transition: background-color 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Controle de Pagamentos da Rifa</h1>
+
+<div id="login-form">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="entrar">Entrar</button>
+</div>
+
+<div id="logout-btn" style="display: none;">
+    <button id="sair">Sair</button>
+</div>
+
+<table id="tabela" style="display:none;">
+    <thead>
+        <tr>
+            <th>Número</th>
+            <th>Nome</th>
+            <th>Contato</th>
+            <th>Status</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody id="rifa-tabela"></tbody>
+</table>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+     const firebaseConfig = {
+  apiKey: "AIzaSyCSJeU0RchEn5191ZGGFdnJAB3wxf3JYrA",
+  authDomain: "rifahinode.firebaseapp.com",
+  databaseURL: "https://rifahinode-default-rtdb.firebaseio.com",
+  projectId: "rifahinode",
+  storageBucket: "rifahinode.firebasestorage.app",
+  messagingSenderId: "832063584369",
+  appId: "1:832063584369:web:224ef41ce0a768842283d0"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    const tabela = document.getElementById("rifa-tabela");
+    const tabelaDiv = document.getElementById("tabela");
+
+    function carregarDados() {
+        get(ref(db, "rifa")).then(snapshot => {
+            tabela.innerHTML = "";
+
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const numeros = Object.keys(data).sort((a, b) => parseInt(a) - parseInt(b));
+
+                numeros.forEach(numero => {
+                    const { nome, contato, pago } = data[numero];
+
+                    if (!nome) return;
+
+                    const tr = document.createElement("tr");
+
+                    tr.innerHTML = `
+                        <td>${numero}</td>
+                        <td>${nome}</td>
+                        <td>${contato ?? '-'}</td>
+                        <td class="${pago ? 'pago' : ''}">${pago ? "Pago" : "Pendente"}</td>
+                        <td>
+                            ${!pago ? `
+                                <button class="btn-pagar" data-numero="${numero}">Marcar como pago</button>
+                                <button class="btn-excluir" data-numero="${numero}">Excluir</button>
+                            ` : ""}
+                        </td>
+                    `;
+
+                    tabela.appendChild(tr);
+                });
+
+                // Botão "Marcar como pago"
+                document.querySelectorAll(".btn-pagar").forEach(btn => {
+                    btn.addEventListener("click", function () {
+                        const numero = this.getAttribute("data-numero");
+                        const row = this.closest("tr");
+
+                        if (confirm("Tem certeza que deseja marcar este número como pago?")) {
+                            update(ref(db, "rifa/" + numero), { pago: true }).then(() => {
+                                row.classList.add("highlight");
+                                setTimeout(() => row.classList.remove("highlight"), 2000);
+                                carregarDados();
+                            });
+                        }
+                    });
+                });
+
+                // Botão "Excluir"
+                document.querySelectorAll(".btn-excluir").forEach(btn => {
+                    btn.addEventListener("click", function () {
+                        const numero = this.getAttribute("data-numero");
+
+                        if (confirm("Tem certeza que deseja excluir esta escolha?")) {
+                            update(ref(db, "rifa/" + numero), {
+                                nome: null,
+                                contato: null,
+                                pago: null
+                            }).then(() => {
+                                carregarDados();
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    document.getElementById("entrar").addEventListener("click", () => {
+        const email = document.getElementById("email").value;
+        const senha = document.getElementById("senha").value;
+
+        if (!email || !senha) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        signInWithEmailAndPassword(auth, email, senha)
+            .then(() => {
+                console.log("Logado com sucesso");
+            })
+            .catch(error => {
+                alert("Erro ao fazer login: " + error.message);
+            });
+    });
+
+    document.getElementById("sair").addEventListener("click", () => {
+        signOut(auth);
+    });
+
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("logout-btn").style.display = "flex";
+            tabelaDiv.style.display = "table";
+            carregarDados();
+        } else {
+            document.getElementById("login-form").style.display = "flex";
+            document.getElementById("logout-btn").style.display = "none";
+            tabelaDiv.style.display = "none";
+            tabela.innerHTML = "";
+        }
+    });
+</script>
+
+</body>
+</html>
