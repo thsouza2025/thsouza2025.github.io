@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rifa de Patrocínio</title>
+  <style>
+    body {
+    font-family: Tahoma, Geneva, sans-serif;
+      text-align: center;
+      color: greenyellow;
+      margin: 0;
+      padding: 0;
+    }
+     #video-fundo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      width: 100%;
+      max-width: 1500px;
+      margin: 20px auto;
+      border-radius: 10px;
+      position: relative;
+      z-index: 1;
+      background-size: cover;
+      background-position: center;
+      opacity: 200%;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    .grid-container {
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 5px;
+      padding: 10px;
+    }
+
+    .grid div {
+      background: rgba(253, 253, 253, 0.64);
+      opacity: 90%;
+      font-weight: bold;
+      color: black;
+      padding: 20px;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .grid div:hover {
+      background: rgba(255, 215, 0, 0.6);
+    }
+
+    .selected {
+      background: gold;
+      color: black;
+      font-weight: bold;
+    }
+
+    .confirmed {
+      background: rgba(0, 128, 0, 0.6);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+      pointer-events: none;
+    }
+
+    .titulo {
+      font-size: 35px;
+      margin-top: 15px;
+      font-weight: bold;
+      color:black;
+      text-shadow:
+        0px 0px 0px black,
+        -1px -0px 0px black,
+        0px -0px 0px black,
+        -1px 0px 0px black;
+    }
+
+    .subtitulo {
+      color:black;
+      text-shadow:
+     0px 0px 0px black,
+        -1px -0px 0px black,
+        0px -0px 0px black,
+        -1px 0px 0px black;;
+    }
+
+    .pix, .valor, .confPag, .premio {
+      color:cornsilk;
+      font-size: 15px;
+    }
+
+    .pix {
+      font-size: 35px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .valor {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 30px;
+      margin-bottom: 0;
+    }
+
+    .confPag {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 45px;
+    }
+
+    .instagram {
+      margin-top: 26px;
+      font-size: 30px;
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .instagram a {
+      color: #220d77;
+      text-decoration: none;
+      
+    }
+
+    .premio a {
+      color: black;
+      text-decoration: none;
+      font-size: 30px;
+      text-shadow:
+        1px 1px 0px white,
+        -1px -1px 0px white,
+        1px -1px 0px white,
+        -1px 1px 0px white;
+    }
+
+    .descricao {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      font-size: 30px;
+      color: #14130b;
+    }
+
+    .popup, .overlay {
+      display: none;
+      position: fixed;
+      z-index: 999;
+    }
+
+    .popup {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 300px;
+      z-index: 1000;
+    }
+
+    .popup input, .popup button {
+      width: 90%;
+      padding: 8px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .popup .confirm {
+      background: green;
+      color: white;
+    }
+
+    .popup .cancel {
+      background: red;
+      color: white;
+    }
+
+    .overlay {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .name-list {
+      margin-top: 5px;
+      font-size: 14px;
+      border-radius: 3px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 10em;
+      white-space: normal;
+    }
+
+    .name-list.amarelo {
+      background-color: yellow;
+      color: black;
+    }
+
+    .name-list.verde {
+      background-color: green;
+      color: white;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+        max-width: 100%;
+      }
+
+      .titulo {
+        font-size: 20px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .grid div {
+        padding: 15px;
+        font-size: 16px;
+      }
+
+      .valor, .pix, .instagram a {
+        font-size: 16px;
+      }
+
+      .descricao {
+        font-size: 14px;
+      }
+
+      .popup {
+        width: 80%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .grid div {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      .valor, .pix, .instagram a {
+        font-size: 28px;
+      }
+
+      .descricao {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 🎥 VÍDEO DE FUNDO -->
+  <video autoplay muted loop id="video-fundo">
+    <source src="videos/imagem.mp4" type="video/mp4">
+    Seu navegador não suporta vídeo em HTML5.
+
+  </video>
+
+  <div class="container" id="rifa-container">
+    <h1 class="titulo">Rifa Beneficiente para realização de um procedimento cirurgico.</h1>
+    <h2 class="subtitulo">Contribua e faça parte desse proposito.</h2>
+
+    <div class="grid-container">
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <p class="valor">Valor R$ 30,00 </p>
+    <p class="confPag">(Após confirmação do pagamento o número será validado.)</p>
+    <p class="pix">PIX CPF: 109.630.921-11 Maria Clara </p>
+    <p class="premio">O prêmio serà uma fritadeira Air Fryer  <a href="img/imagem.arfree.jpg">  clique aqui!</a></p>
+   
+    <p class="confPag">O sorteio será realizado apos o preenchimento de toda a rifa<a href="https://www.instagram.com/hinodeemrede" target="_blank"></a>.</p>
+
+    <marquee behavior="scroll" direction="left" scrollamount="10" style="font-weight: bold; font-size: 20px; color: yellow;">
+     Salmos 37:5
+      Entrega o teu caminho ao Senhor, confia nele, e o mais ele fará !
+    </marquee>
+
+    <div class="descricao">
+      <p style="font-size: 30px"><strong></strong></p>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="popup" id="popup">
+    <h2 id="popup-numero" style="color: black"></h2>
+    <input type="text" id="input-nome" placeholder="Digite seu nome completo" />
+    <input type="text" id="input-contato" placeholder="Digite seu contato" />
+    <button class="confirm" id="btn-confirmar">Confirmar</button>
+    <button class="cancel" id="btn-cancelar">Cancelar</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyApscAPu7D8x7nLkTRjfgLgnJ_zAGgx1uw",
+  authDomain: "rifamariaclara.firebaseapp.com",
+  databaseURL: "https://rifamariaclara-default-rtdb.firebaseio.com",
+  projectId: "rifamariaclara",
+  storageBucket: "rifamariaclara.firebasestorage.app",
+  messagingSenderId: "493740374412",
+  appId: "1:493740374412:web:9ce00c96ddeeb3976bbea9"
+};
+
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    document.addEventListener("DOMContentLoaded", function () {
+      let grid = document.getElementById("grid");
+      let overlay = document.getElementById("overlay");
+      let popup = document.getElementById("popup");
+      let popupNumero = document.getElementById("popup-numero");
+      let inputNome = document.getElementById("input-nome");
+      let inputContato = document.getElementById("input-contato");
+      let btnConfirmar = document.getElementById("btn-confirmar");
+      let btnCancelar = document.getElementById("btn-cancelar");
+
+      for (let i = 1; i <= 250; i++) {
+        let div = document.createElement("div");
+        div.textContent = i;
+        div.dataset.numero = i;
+
+        div.addEventListener("click", function () {
+          if (div.classList.contains("confirmed")) return;
+          popupNumero.textContent = "Número selecionado: " + this.dataset.numero;
+          inputNome.value = "";
+          inputContato.value = "";
+          popup.style.display = "block";
+          overlay.style.display = "block";
+          div.classList.add("selected");
+        });
+
+        grid.appendChild(div);
+      }
+
+      function loadNames() {
+        get(ref(db, "rifa"))
+          .then(snapshot => {
+            if (snapshot.exists()) {
+              const rifaData = snapshot.val();
+              for (let numero in rifaData) {
+                let { nome, contato, pago } = rifaData[numero];
+                let numberDiv = document.querySelector(`[data-numero='${numero}']`);
+                if (numberDiv) {
+                  let nameElement = document.createElement("div");
+                  nameElement.classList.add("name-list", pago ? "verde" : "amarelo");
+                  nameElement.textContent = nome + (contato ? ` / ${contato}` : "");
+                  numberDiv.appendChild(nameElement);
+                  numberDiv.classList.add("confirmed");
+                }
+              }
+            }
+          })
+          .catch(console.error);
+      }
+
+      loadNames();
+
+      btnConfirmar.addEventListener("click", function () {
+        let nome = inputNome.value.trim();
+        let contato = inputContato.value.trim();
+        let numero = popupNumero.textContent.split(": ")[1];
+
+        if (nome.length < 10 || nome.length > 20 || contato.length < 8 || contato.length > 15) {
+          alert("Preencha corretamente os campos.");
+          return;
+        }
+
+        set(ref(db, "rifa/" + numero), { nome, contato, pago: false }).then(() => {
+          alert("Número confirmado!");
+          let numberDiv = document.querySelector(`[data-numero='${numero}']`);
+          numberDiv.classList.remove("selected");
+          numberDiv.classList.add("confirmed");
+
+          let nameElement = document.createElement("div");
+          nameElement.classList.add("name-list", "amarelo");
+          nameElement.textContent = nome + " / " + contato;
+          numberDiv.appendChild(nameElement);
+        });
+
+        popup.style.display = "none";
+        overlay.style.display = "none";
+      });
+
+      btnCancelar.addEventListener("click", function () {
+        popup.style.display = "none";
+        overlay.style.display = "none";
+      });
+    });
+  </script>
+
+  <!-- SCRIPT PARA MUDAR IMAGEM DE FUNDO A CADA 20 SEGUNDOS -->
+  <script>
+    const imagensFundo = [
+      "img/imagem.maria.jpg",
+     
+    ];
+
+    let indiceFundo = 0;
+    const container = document.getElementById("rifa-container");
+
+    function trocarImagemFundo() {
+      container.style.backgroundImage = `url('${imagensFundo[indiceFundo]}')`;
+      indiceFundo = (indiceFundo + 1) % imagensFundo.length;
+    }
+
+    trocarImagemFundo();
+    setInterval(trocarImagemFundo, 10000);
+  </script>
+</body>
+</html>
